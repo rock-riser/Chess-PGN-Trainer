@@ -502,6 +502,29 @@ function skipToNextPuzzle() {
 	loadPuzzle(puzzleset[PuzzleOrder[increment]]);
 }
 
+function skipToPreviousPuzzle() {
+	// Are there more puzzles to go?  If yes, load the previous one in the sequence
+	if (increment > 0) {
+		increment -= 1;
+	}
+
+	loadPuzzle(puzzleset[PuzzleOrder[increment]]);
+}
+
+function updateSliderLabel() {
+    const sliderValue = $('#puzzle_slider').val();
+    $('#slider_label').text(`Puzzle: ${sliderValue}`);
+}
+
+function skipToSelectedPuzzle() {
+    const selectedPuzzleIndex = parseInt($('#puzzle_slider').val(), 10) - 1;
+
+    if (selectedPuzzleIndex >= 0 && selectedPuzzleIndex < puzzleset.length) {
+        increment = selectedPuzzleIndex;
+        loadPuzzle(puzzleset[PuzzleOrder[increment]]);
+    }
+}
+
 /**
  * Compare latest played move to the move in the same position as the PGN
  *
@@ -579,7 +602,7 @@ function checkAndPlayNext(target) {
 		showStats();
 
 		// Hide & disable the "Start" and "Pause" buttons
-		setDisplayAndDisabled(['#btn_starttest', '#btn_pause', '#btn_next', '#btn_skip'], 'none', true);
+		setDisplayAndDisabled(['#btn_starttest', '#btn_pause', '#btn_next', '#btn_skip', '#btn_skip_back', '#btn_skip_to_selected'], 'none', true);
 
 		// Show "Restart" button
 		setDisplayAndDisabled(['#btn_restart'], 'inline-block', false);
@@ -738,6 +761,13 @@ function resetGame() {
 	$('#progressbar').width('0%');
 	$('#progressbar').text('0%');
 
+    // Reset the slider
+    $('#puzzle_slider').val(1);
+    $('#puzzle_slider').attr('max', puzzleset.length);
+    $('#slider_label').text('Puzzle: 1');
+    $('#puzzle_slider').css('display', 'none');
+    $('#slider_label').css('display', 'none');
+
 	// Disable options checkboxes
 	setCheckboxSelectability(false);
 
@@ -811,12 +841,19 @@ function startTest() {
 	setDisplayAndDisabled(['#btn_starttest', '#btn_restart', '#btn_showresults'], 'none');
 
 	// Show & enable the "Hint" and "Pause" buttons
-	setDisplayAndDisabled(['#btn_pause', '#btn_hint', '#btn_skip'], 'inline-block', false);
+	setDisplayAndDisabled(['#btn_pause', '#btn_hint', '#btn_skip', '#btn_skip_back', '#btn_skip_to_selected'], 'inline-block', false);
 
 	// Only turn on the next button if the option is selected (at the start it is disabled)
 	if ($('#manualadvance').is(':checked')) {
 		setDisplayAndDisabled(['#btn_next'], 'inline-block', true);
 	}
+
+    // Show the slider and update its range
+    $('#puzzle_slider').attr('max', puzzleset.length);
+    $('#puzzle_slider').val(1);
+    $('#slider_label').text('Puzzle: 1');
+    $('#puzzle_slider').css('display', 'block');
+    $('#slider_label').css('display', 'block');	
 
 	// Disable changing options
 	setCheckboxSelectability(false);
@@ -897,6 +934,9 @@ function updateProgressBar(partial_value, total_value) {
 	let progresspercent = progress + '%';
 	$('#progressbar').width(progresspercent);
 	$('#progressbar').text(progresspercent);
+
+	$('#puzzle_slider').val(partial_value + 1);
+	updateSliderLabel();
 }
 
 /**
