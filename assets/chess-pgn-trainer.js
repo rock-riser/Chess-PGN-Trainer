@@ -491,6 +491,18 @@ function goToNextPuzzle() {
 }
 
 /**
+ * Manually advance to next puzzle (used for the Next button)
+ */
+function skipToNextPuzzle() {
+	// Are there more puzzles to go?  If yes, load the next one in the sequence
+	if (increment < puzzleset.length - 1) {
+		increment += 1;
+	}
+
+	loadPuzzle(puzzleset[PuzzleOrder[increment]]);
+}
+
+/**
  * Compare latest played move to the move in the same position as the PGN
  *
  * @returns {string}
@@ -567,7 +579,7 @@ function checkAndPlayNext(target) {
 		showStats();
 
 		// Hide & disable the "Start" and "Pause" buttons
-		setDisplayAndDisabled(['#btn_starttest', '#btn_pause', '#btn_next'], 'none', true);
+		setDisplayAndDisabled(['#btn_starttest', '#btn_pause', '#btn_next', '#btn_skip'], 'none', true);
 
 		// Show "Restart" button
 		setDisplayAndDisabled(['#btn_restart'], 'inline-block', false);
@@ -799,7 +811,7 @@ function startTest() {
 	setDisplayAndDisabled(['#btn_starttest', '#btn_restart', '#btn_showresults'], 'none');
 
 	// Show & enable the "Hint" and "Pause" buttons
-	setDisplayAndDisabled(['#btn_pause', '#btn_hint'], 'inline-block', false);
+	setDisplayAndDisabled(['#btn_pause', '#btn_hint', '#btn_skip'], 'inline-block', false);
 
 	// Only turn on the next button if the option is selected (at the start it is disabled)
 	if ($('#manualadvance').is(':checked')) {
