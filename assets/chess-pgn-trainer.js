@@ -511,11 +511,6 @@ function skipToPreviousPuzzle() {
 	loadPuzzle(puzzleset[PuzzleOrder[increment]]);
 }
 
-function updateSliderLabel() {
-    const sliderValue = $('#puzzle_slider').val();
-    $('#slider_label').text(`Puzzle: ${sliderValue}`);
-}
-
 function skipToSelectedPuzzle() {
     const selectedPuzzleIndex = parseInt($('#puzzle_slider').val(), 10) - 1;
 
@@ -764,9 +759,7 @@ function resetGame() {
     // Reset the slider
     $('#puzzle_slider').val(1);
     $('#puzzle_slider').attr('max', puzzleset.length);
-    $('#slider_label').text('Puzzle: 1');
     $('#puzzle_slider').css('display', 'none');
-    $('#slider_label').css('display', 'none');
 
 	// Disable options checkboxes
 	setCheckboxSelectability(false);
@@ -851,9 +844,7 @@ function startTest() {
     // Show the slider and update its range
     $('#puzzle_slider').attr('max', puzzleset.length);
     $('#puzzle_slider').val(1);
-    $('#slider_label').text('Puzzle: 1');
     $('#puzzle_slider').css('display', 'block');
-    $('#slider_label').css('display', 'block');	
 
 	// Disable changing options
 	setCheckboxSelectability(false);
@@ -934,9 +925,6 @@ function updateProgressBar(partial_value, total_value) {
 	let progresspercent = progress + '%';
 	$('#progressbar').width(progresspercent);
 	$('#progressbar').text(progresspercent);
-
-	$('#puzzle_slider').val(partial_value + 1);
-	updateSliderLabel();
 }
 
 /**
