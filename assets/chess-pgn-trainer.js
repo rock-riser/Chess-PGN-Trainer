@@ -1048,7 +1048,7 @@ function loadPuzzle(PGNPuzzle) {
 
 	// Check for presense of MoveColor tag and if available use that instead
 	if (typeof PGNPuzzle.tags.MoveColor !== 'undefined') {
-		boardOrientation = PGNPuzzle.tags.MoveColor;
+		boardOrientation = PGNPuzzle.tags.MoveColor.substring(0, 1).toLowerCase();
 	}
 
 	// Get the current status of the board.  Use it to determine if the board needs to be flipped based on the puzzle.
