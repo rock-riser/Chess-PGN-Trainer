@@ -56,6 +56,20 @@
 
 
 	<!-- Additional PGN Handling Functions -->
+	<script>
+		try {
+			const script = document.createElement('script');
+			script.src = "./pgn-files/pgn-files.js";
+			script.onload = () => console.log("PGN files loaded successfully.");
+			script.onerror = () => {
+				console.error("Failed to load pgn-files.js. Please ensure the file exists.");
+				alert("pgn-files.js not found. Please run import_pgn_files.py to generate the required file.");
+			};
+			document.head.appendChild(script);
+		} catch (error) {
+			console.error("An error occurred while loading pgn-files.js:", error);
+		}
+	</script>
 	<script src="./assets/pgn-handling.js"></script>
 
 
@@ -155,7 +169,7 @@
 
 								<div class="row fs-4">
 
-									<div class="container align-items-center col-12" style="text-align:center">
+									<!-- <div class="container align-items-center col-12" style="text-align:center">
 										<button type="button" id="openPGN_button" class="btn btn-primary fs-5"
 											style="display: inline-block">Open PGN File</button>
 
@@ -164,6 +178,13 @@
 										<button id="btn_reset" class="btn btn-primary fs-5"
 											style="display: inline-block">Reset</button>
 
+									</div> -->
+																		<!-- Add this below the "Open PGN File" button -->
+									<div class="container align-items-center col-12" style="text-align:center">
+										<label for="pgn_file_select" class="form-label fs-5">Select PGN File:</label>
+										<select id="pgn_file_select" class="form-select fs-5" style="display: inline-block; width: auto;" onchange="loadSelectedPGNFile();">
+											<option value="" disabled selected>Select a file</option>
+										</select>
 									</div>
 
 

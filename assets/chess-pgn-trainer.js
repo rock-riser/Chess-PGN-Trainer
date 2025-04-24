@@ -257,6 +257,7 @@ function updateBoard(animate) {
  */
 function initalize() {
 	loadSettings();
+	fetchPGNFiles();
 	addPieceSetNames();
 	changePieces();
 	resetGame();

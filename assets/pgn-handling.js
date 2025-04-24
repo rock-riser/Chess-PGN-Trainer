@@ -95,55 +95,40 @@ function cleanPGNFile(PGNData) {
 /**
  * Feed the PGN file provided by the user here to the PGN Parser and update/enable the controls
  */
-function loadPGNFile() {
+function loadPGNFile(pgnData) {
 	resetGame();
-	let PGNFile;
+	let PGNFile = pgnData;
 
-	const [file] = document.getElementById('openPGN').files;
-	const reader = new FileReader();
+	// Clean up before parsing
+	PGNFile = cleanPGNFile(PGNFile);
 
-	reader.addEventListener(
-		'load',
-		() => {
-			PGNFile = reader.result;
+	// Try to parse the file.  Display error if issue discovered.
+	try {
+		parsePGN(PGNFile);
 
-			// Clean up before parsing
-			PGNFile = cleanPGNFile(PGNFile);
+		// File is now loaded
+		// Update the range of the puzzle counters to the size of the puzzleset
+		$('#puzzleNumber').text('1');
+		$('#puzzleNumbertotal').text(puzzleset.length);
 
-			// Try to parse the file.  Display error if issue discovered.
-			try {
-				parsePGN(PGNFile);
+		// Set any startup options found in the PGN
+		setStartupOptions();
 
-				// File is now loaded
-				// Update the range of the puzzle counters to the size of the puzzleset
-				$('#puzzleNumber').text('1');
-				$('#puzzleNumbertotal').text(puzzleset.length);
-
-				// Set any startup options found in the PGN
-				setStartupOptions();
-
-				// Enable the start button
-				setDisplayAndDisabled(['#btn_starttest'], 'inline-block', false);
-			} catch (err) {
-				alert(
-					'There is an issue with the PGN file.  Error message is as follows:\n\n' +
-						err +
-						'\n\nPuzzles loaded successfully before error: ' +
-						puzzleset.length
-				);
-				console.log(err);
-				console.log(puzzleset);
-				console.log(PGNFile);
-				resetGame();
-			} finally {
-				// Do nothing else
-			}
-		},
-		false
-	);
-
-	if (file) {
-		reader.readAsText(file);
+		// Enable the start button
+		setDisplayAndDisabled(['#btn_starttest'], 'inline-block', false);
+	} catch (err) {
+		alert(
+			'There is an issue with the PGN file.  Error message is as follows:\n\n' +
+				err +
+				'\n\nPuzzles loaded successfully before error: ' +
+				puzzleset.length
+		);
+		console.log(err);
+		console.log(puzzleset);
+		console.log(PGNFile);
+		resetGame();
+	} finally {
+		// Do nothing else
 	}
 
 	// Now that file is loaded, enable the ability to select options
@@ -154,6 +139,36 @@ function loadPGNFile() {
 
 	// Close the sidebar
 	$('#close_sidebar').click();
+}
+
+/**
+ * Fetch the list of available PGN files from the server.
+ */
+function fetchPGNFiles() {
+    Object.keys(PGN_FILES).forEach((fileName) => {
+        $('#pgn_file_select').append(
+            `<option value="${fileName}">${fileName}</option>`
+        );
+    });
+}
+
+/**
+ * Load the selected PGN file.
+ */
+function loadSelectedPGNFile() {
+    const selectedFile = $('#pgn_file_select').val();
+    if (!selectedFile) {
+        alert('Please select a PGN file.');
+        return;
+    }
+
+    const pgnData = PGN_FILES[selectedFile];
+    if (pgnData) {
+        resetGame();
+        loadPGNFile(pgnData); // Assuming loadPGNFile can handle raw PGN data
+    } else {
+        console.error(`PGN file not found: ${selectedFile}`);
+    }
 }
 
 /**
